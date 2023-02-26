@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// Example of why pushing multiple routes won't work
+// If you go through the pages more than once, and update
+// the state observable, the issues is clearly reflected in logs
+
+
 // This can be updated with push allowing for data to be passed in some cases
 String nostatevar = "a";
 
@@ -30,7 +35,14 @@ class _NavDemoRootState extends State<NavDemoRoot> {
   Widget build(BuildContext context) {
     print("root BUILD");
     return Scaffold(
-        appBar: AppBar(leading: ,),
+        appBar: AppBar(leading: DropdownButton(
+          onChanged: (val){
+            if (val == "cyc"){
+
+            }
+          },
+          items: [DropdownMenuItem(child: Text("Cyclic Example"), value: "cyc",)],
+        ),),
         body:Container(child:  Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children:[
@@ -110,14 +122,25 @@ class _Page2State extends State<Page2> {
   @override
   Widget build(BuildContext context) {
     print("page 2 BUILD");
-    return Scaffold(body:Container(child: Center(child:
+    return Scaffold(body:Container(child:
+    Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children:[
     ElevatedButton(onPressed: (){
       print("push root press");
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (context){return NavDemoRoot();})
-      );
+          MaterialPageRoute(builder: (context){return NavDemoRoot();}));
     },
       child: Text("Push root"),
-    ),),));
+    ),
+        ElevatedButton(onPressed: () {
+          print("push root and remove press");
+          Navigator.pushAndRemoveUntil(
+              context, MaterialPageRoute(builder: (_) =>
+              NavDemoRoot()), (route) => false);
+        }, child: Text("Push and remove root")),
+
+    ])
+    ),);
   }
 }
